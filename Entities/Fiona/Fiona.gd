@@ -127,3 +127,13 @@ func talk(answer = ""):
 					dialoguePopup.close()
 					# Set Fiona's animation to "idle"
 					$AnimatedSprite.play("idle")
+
+func to_dictionary():
+	return {
+		"quest_status" : quest_status,
+		"necklace_found" : necklace_found
+	}
+
+func from_dictionary(data):
+	necklace_found = data.necklace_found
+	quest_status = int(data.quest_status)

@@ -78,6 +78,15 @@ func _input(event):
 					# Talk to NPC
 					target.talk()
 					return
+				if target.name == "Bed":
+					# Sleep
+					$AnimationPlayer.play("Sleep")
+					yield(get_tree().create_timer(1), "timeout")
+					health = health_max
+					mana = mana_max
+					emit_signal("player_stats_changed", self)
+					return
+					
 			# Play attack animation
 			attack_playing = true
 			var animation = get_animation_direction(last_direction) + "_attack"
@@ -200,3 +209,31 @@ func add_xp(value):
 		emit_signal("player_level_up")
 		
 	emit_signal("player_stats_changed", self)
+
+# used to save and load player data
+func to_dictionary():
+	return {
+		"position" : [position.x, position.y],
+		"health" : health,
+		"health_max" : health_max,
+		"mana" : mana,
+		"mana_max" : mana_max,
+		"xp" : xp,
+		"xp_next_level" : xp_next_level,
+		"level" : level,
+		"health_potions" : health_potions,
+		"mana_potions" : mana_potions
+	}
+
+func from_dictionary(data):
+	position = Vector2(data.position[0], data.position[1])
+	health = data.health
+	health_max = data.health_max
+	mana = data.mana
+	mana_max = data.mana_max
+	xp = data.xp
+	xp_next_level = data.xp_next_level
+	level = data.level
+	health_potions = data.health_potions
+	mana_potions = data.mana_potions
+	

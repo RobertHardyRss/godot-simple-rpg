@@ -158,3 +158,13 @@ func _on_AnimatedSprite_frame_changed():
 		if target != null and target.name == "Player" and player.health > 0:
 			player.hit(attack_damage)
 		$SoundAttack.play()
+
+func to_dictionary():
+	return {
+		"position" : [position.x, position.y],
+		"health" : health
+	}
+
+func from_dictionary(data):
+	position = Vector2(data.position[0], data.position[1])
+	health = data.health

@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=2]
+[gd_scene load_steps=65 format=2]
 
 [ext_resource path="res://Entities/Player/player_left_attack_2.png" type="Texture" id=1]
 [ext_resource path="res://Entities/Player/Player.gd" type="Script" id=2]
@@ -56,6 +56,8 @@
 [ext_resource path="res://Sounds/object.wav" type="AudioStream" id=54]
 [ext_resource path="res://Sounds/level_up.wav" type="AudioStream" id=55]
 [ext_resource path="res://GUI/MenuPopup.gd" type="Script" id=56]
+[ext_resource path="res://Entities/House/House.tscn" type="PackedScene" id=57]
+[ext_resource path="res://Scripts/SaveLoadGame.gd" type="Script" id=58]
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
@@ -69,14 +71,19 @@ animations = [ {
 "name": "left_idle",
 "speed": 1.0
 }, {
-"frames": [ ExtResource( 26 ), ExtResource( 28 ), ExtResource( 21 ) ],
-"loop": false,
-"name": "up_attack",
-"speed": 7.0
-}, {
 "frames": [ ExtResource( 20 ), ExtResource( 15 ), ExtResource( 24 ) ],
 "loop": false,
 "name": "right_attack",
+"speed": 7.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 11 ), ExtResource( 12 ) ],
+"loop": false,
+"name": "down_attack",
+"speed": 7.0
+}, {
+"frames": [ ExtResource( 4 ), ExtResource( 14 ), ExtResource( 1 ) ],
+"loop": false,
+"name": "left_attack",
 "speed": 7.0
 }, {
 "frames": [ ExtResource( 6 ), ExtResource( 7 ) ],
@@ -84,20 +91,20 @@ animations = [ {
 "name": "down_idle",
 "speed": 1.0
 }, {
-"frames": [ ExtResource( 4 ), ExtResource( 14 ), ExtResource( 1 ) ],
+"frames": [ ExtResource( 20 ), ExtResource( 18 ) ],
+"loop": true,
+"name": "right_idle",
+"speed": 1.0
+}, {
+"frames": [ ExtResource( 26 ), ExtResource( 28 ), ExtResource( 21 ) ],
 "loop": false,
-"name": "left_attack",
+"name": "up_attack",
 "speed": 7.0
 }, {
 "frames": [ ExtResource( 6 ), ExtResource( 9 ), ExtResource( 6 ), ExtResource( 10 ) ],
 "loop": true,
 "name": "down_walk",
 "speed": 10.0
-}, {
-"frames": [ ExtResource( 6 ), ExtResource( 11 ), ExtResource( 12 ) ],
-"loop": false,
-"name": "down_attack",
-"speed": 7.0
 }, {
 "frames": [ ExtResource( 26 ), ExtResource( 32 ) ],
 "loop": true,
@@ -114,24 +121,19 @@ animations = [ {
 "name": "left_walk",
 "speed": 10.0
 }, {
-"frames": [ ExtResource( 20 ), ExtResource( 18 ) ],
-"loop": true,
-"name": "right_idle",
-"speed": 1.0
-}, {
 "frames": [ ExtResource( 4 ), ExtResource( 13 ), ExtResource( 30 ) ],
 "loop": false,
 "name": "left_fireball",
 "speed": 7.0
 }, {
-"frames": [ ExtResource( 26 ), ExtResource( 22 ), ExtResource( 25 ) ],
-"loop": false,
-"name": "up_fireball",
-"speed": 7.0
-}, {
 "frames": [ ExtResource( 20 ), ExtResource( 17 ), ExtResource( 23 ) ],
 "loop": false,
 "name": "right_fireball",
+"speed": 7.0
+}, {
+"frames": [ ExtResource( 26 ), ExtResource( 22 ), ExtResource( 25 ) ],
+"loop": false,
+"name": "up_fireball",
 "speed": 7.0
 }, {
 "frames": [ ExtResource( 6 ), ExtResource( 5 ), ExtResource( 8 ) ],
@@ -174,6 +176,22 @@ tracks/0/keys = {
 "values": [ Color( 1, 0, 0, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
+[sub_resource type="Animation" id=6]
+resource_name = "Sleep"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("../GUI/Sleep:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4, 2.6, 3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+
 [sub_resource type="Animation" id=5]
 resource_name = "ShowDialogue"
 tracks/0/type = "value"
@@ -202,6 +220,7 @@ tracks/1/keys = {
 }
 
 [node name="Root" type="Node"]
+script = ExtResource( 58 )
 
 [node name="Player" type="KinematicBody2D" parent="."]
 position = Vector2( 160, 90 )
@@ -211,7 +230,6 @@ script = ExtResource( 2 )
 [node name="Sprite" type="AnimatedSprite" parent="Player"]
 frames = SubResource( 2 )
 animation = "down_idle"
-frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
@@ -229,6 +247,7 @@ cast_to = Vector2( 0, 8 )
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Player"]
 "anims/Game Over" = SubResource( 4 )
 anims/Hit = SubResource( 3 )
+anims/Sleep = SubResource( 6 )
 
 [node name="Music" type="AudioStreamPlayer" parent="Player"]
 pause_mode = 2
@@ -439,6 +458,17 @@ text = "GAME OVER"
 align = 1
 valign = 1
 
+[node name="Label2" type="Label" parent="GUI/GameOver"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -30.0
+margin_bottom = -20.0
+custom_fonts/font = ExtResource( 37 )
+text = "PRESS ESC TO RETURN TO MAIN MENU"
+align = 1
+valign = 1
+
 [node name="LevelPopup" type="Popup" parent="GUI"]
 pause_mode = 2
 anchor_left = 0.5
@@ -571,43 +601,61 @@ text = "RESUME GAME"
 align = 1
 valign = 1
 
-[node name="Restart" type="ColorRect" parent="GUI/MenuPopup"]
+[node name="SaveGame" type="ColorRect" parent="GUI/MenuPopup"]
 margin_left = 70.0
 margin_top = 80.0
 margin_right = 250.0
 margin_bottom = 100.0
 
-[node name="Label" type="Label" parent="GUI/MenuPopup/Restart"]
+[node name="Label" type="Label" parent="GUI/MenuPopup/SaveGame"]
 margin_right = 180.0
 margin_bottom = 20.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 37 )
-text = "RESTART GAME"
+text = "SAVE GAME"
 align = 1
 valign = 1
 
-[node name="Quit" type="ColorRect" parent="GUI/MenuPopup"]
+[node name="MainMenu" type="ColorRect" parent="GUI/MenuPopup"]
 margin_left = 70.0
 margin_top = 110.0
 margin_right = 250.0
 margin_bottom = 130.0
 
-[node name="Label" type="Label" parent="GUI/MenuPopup/Quit"]
+[node name="Label" type="Label" parent="GUI/MenuPopup/MainMenu"]
 margin_right = 180.0
 margin_bottom = 20.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 37 )
-text = "QUIT"
+text = "MAIN MENU"
 align = 1
 valign = 1
 
+[node name="Sleep" type="ColorRect" parent="GUI"]
+modulate = Color( 1, 1, 1, 0 )
+margin_right = 320.0
+margin_bottom = 180.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="RichTextLabel" type="RichTextLabel" parent="GUI/Sleep"]
+anchor_bottom = 0.129
+margin_top = 80.0
+margin_right = 320.0
+margin_bottom = 78.78
+rect_clip_content = false
+custom_colors/default_color = Color( 1, 1, 1, 1 )
+custom_fonts/normal_font = ExtResource( 37 )
+bbcode_enabled = true
+bbcode_text = "[center][wave amp=40 freq=2]ZZZ...[/wave][/center]"
+text = "ZZZ..."
+
 [node name="SkeletonSpawner" parent="." instance=ExtResource( 39 )]
 
-[node name="Potion" parent="." instance=ExtResource( 40 )]
+[node name="StartPotion1" parent="." instance=ExtResource( 40 )]
 position = Vector2( 111, 128 )
 type = 1
 
-[node name="Potion2" parent="." instance=ExtResource( 40 )]
+[node name="StartPotion2" parent="." instance=ExtResource( 40 )]
 position = Vector2( 137, 133 )
 
 [node name="Fiona" parent="." instance=ExtResource( 47 )]
@@ -615,6 +663,9 @@ position = Vector2( 275, 59 )
 
 [node name="Necklace" parent="." instance=ExtResource( 48 )]
 position = Vector2( 513, 726 )
+
+[node name="House" parent="." instance=ExtResource( 57 )]
+position = Vector2( 575, 102 )
 
 [connection signal="player_level_up" from="Player" to="GUI/LevelPopup" method="_on_Player_player_level_up"]
 [connection signal="player_stats_changed" from="Player" to="GUI/Health" method="_on_Player_player_stats_changed"]
